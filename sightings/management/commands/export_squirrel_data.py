@@ -1,0 +1,52 @@
+from django.core.management.base import BaseCommand, CommandError
+from django.db import models
+from sightings.models import new_sighting
+from datetime import datetime
+import csv
+import sys
+
+class Command(BaseCommand):
+
+    help = 'writes a csv file into some path that user inputs'
+    def add_arguments(self, parser):
+          parser.add_argument('path', type=str)
+
+    def handle(self, *app_labels, **options):
+        with open(str(options['path'])+'/file.csv','w',newline='') as f:
+            fieldnames=['Longitude', 'Latitude','Unique_Squirrel_ID', 'Shift', 'Date','Age','Primary_Fur_Color'
+            ,'Location','Specific_Location','Running','Chasing', 'Climbing','Eating' ,'Foraging',
+            'Other_Activities' , 'Kuks','Quaas', 'Moans', 'Tail_flags', 'Tail_twitches', 'Approaches', 'Indifferent', 
+            'Runs_from']
+            thewriter=csv.DictWriter(f,fieldnames=fieldnames)
+            thewriter.writeheader()
+
+            squirrels= new_sighting.objects.values()
+            rows =new_sighting.objects.count()
+            
+            for row in range(rows):
+                thewriter.writerow({
+            
+                    'Longitude': squirrels[row]['Longitude'],
+                    'Latitude': squirrels[row]['Latitude'],
+                    'Unique_Squirrel_ID': squirrels[row]['Unique_Squirrel_ID'], 
+                    'Shift': squirrels[row]['Shift'], 
+                    'Date': squirrels[row]['Date'],
+                    'Age': squirrels[row]['Age'],
+                    'Primary_Fur_Color': squirrels[row]['Primary_Fur_Color'],
+                    'Location': squirrels[row]['Location'],
+                    'Specific_Location': squirrels[row]['Specific_Location'],
+                    'Running': squirrels[row]['Running'],
+                    'Chasing': squirrels[row]['Chasing'],
+                    'Climbing': squirrels[row]['Climbing'],
+                    'Eating': squirrels[row]['Eating'] ,
+                    'Foraging': squirrels[row]['Foraging'],
+                    'Other_Activities': squirrels[row]['Other_Activities'],
+                    'Kuks': squirrels[row]['Kuks'],
+                    'Quaas': squirrels[row]['Quaas'], 
+                    'Moans': squirrels[row]['Moans'], 
+                    'Tail_flags': squirrels[row]['Tail_flags'],
+                    'Tail_twitches': squirrels[row]['Tail_twitches'], 
+                    'Approaches': squirrels[row]['Approaches'], 
+                    'Indifferent': squirrels[row]['Indifferent'], 
+                    'Runs_from': squirrels[row]['Runs_from'],
+                    })
